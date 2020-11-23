@@ -1,0 +1,121 @@
+import discord
+from discord.ext import commands
+
+import dark_light
+import data
+import init
+import parse_crits
+import parse_nlrme
+import random
+import roll
+
+bot = commands.Bot(command_prefix='>')
+commands
+
+def format_status(dark: int, light: int):
+    return "DARK: " + str(dark) + "\nLIGHT: " + str(light)
+
+@bot.command()
+async def ping(ctx):
+    """
+    Pings the bot to make sure it's online.
+    Usage: >ping
+    """
+    await ctx.send("Pong!")
+
+@bot.command(name="set")
+async def set_(ctx, dark: int, light: int):
+    """
+    Sets the dark and light side points.
+    Usage: >set <dark points> <light points>
+    """
+    dark_light.set_dark_light(dark, light)
+    await ctx.send(format_status(dark, light))
+
+@bot.command()
+async def light(ctx):
+    """
+    Uses a light side point.
+    Usage: >light
+    """
+    dark, light = dark_light.get_dark_light()
+    if light <= 0:
+        await ctx.send("No light points remaining.")
+    else:
+        dark += 1
+        light -= 1
+        dark_light.set_dark_light(dark, light)
+        await ctx.send(format_status(dark, light))
+
+@bot.command()
+async def dark(ctx):
+    """
+    Uses a dark side point.
+    Usage: >dark
+    """
+    dark, light = dark_light.get_dark_light()
+    if dark <= 0:
+        await ctx.send("No dark points remaining.")
+    else:
+        light += 1
+        dark -= 1
+        dark_light.set_dark_light(dark, light)
+        await ctx.send(format_status(dark, light))
+
+@bot.command()
+async def effect(ctx):
+    """
+    Rolls on the random magical effect table.
+    Usage: >effect
+    """
+    rolls = parse_nlrme.get_rolls()
+    roll = random.choice(rolls)
+    await ctx.send(roll)
+
+@bot.command()
+async def crit(ctx, table: str):
+    """
+    Rolls on a critical hit table.
+    Usage: >crit <table prefix>
+    """
+    tables = parse_crits.get_tables()
+    matches = [t for t in tables if t.lower().startswith(table.lower())]
+    if len(matches) > 1:
+        await ctx.send(f"Multiple tables matching '{table}': " + str(matches))
+    elif len(matches) == 0:
+        await ctx.send(f"No tables matching '{table}'")
+    else:
+        roll = random.choice(tables[matches[0]])
+        await ctx.send(matches[0])
+        await ctx.send(roll)
+
+@bot.command()
+async def resetinit(ctx):
+    """
+    Resets the initiative tracker.
+    Usage: >resetinit
+    """
+    init.reset()
+    await ctx.send("Initiative reset.")
+
+@bot.command()
+async def setinit(ctx, name: str, value: int):
+    """
+    Sets the initiative roll for a character.
+    Usage: >setinit <name> <value>
+    """
+    init.add(name, value)
+    await ctx.send(init.get_formatted())
+
+@bot.command()
+async def rollinit(ctx, name: str, bonus: int):
+    """
+    Rolls initiative for a character.
+    Usage: >rollinit <name> <bonus>
+    """
+    value = roll.d(20) + bonus
+    init.add(name, value)
+    await ctx.send(init.get_formatted())
+
+api_key = data.get()["api-key"]
+bot.run(api_key)
