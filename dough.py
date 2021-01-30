@@ -1,13 +1,15 @@
 import discord
 from discord.ext import commands
 
+import rolldice
+
 import dark_light
 import data
 import init
 import parse_crits
 import parse_nlrme
 import random
-import roll
+import roll as roll1
 
 bot = commands.Bot(command_prefix='>')
 commands
@@ -113,9 +115,22 @@ async def rollinit(ctx, name: str, bonus: int):
     Rolls initiative for a character.
     Usage: >rollinit <name> <bonus>
     """
-    value = roll.d(20) + bonus
+    value = roll1.d(20) + bonus
     init.add(name, value)
     await ctx.send(init.get_formatted())
+
+@bot.command()
+async def roll(ctx, *roll_split):
+    """
+    Rolls some dice.
+    Usage: >roll <roll>
+
+    See https://www.critdice.com/roll-advanced-dice/ for syntax.
+    """
+    roll = " ".join(roll_split)
+    result, explanation = rolldice.roll_dice(roll)
+    await ctx.send(f"Result: {result}\nExplanation: {explanation}")
+
 
 api_key = data.get()["api-key"]
 bot.run(api_key)
