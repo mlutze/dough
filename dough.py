@@ -123,6 +123,7 @@ async def roll(ctx, *roll_split):
 
 
 async def on_command_error(ctx, error):
+    print(error)
     if ctx.command:
         await ctx.send_help(ctx.command)
     else:
