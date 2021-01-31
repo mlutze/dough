@@ -21,7 +21,6 @@ def format_status(dark: int, light: int):
 async def ping(ctx):
     """
     Pings the bot to make sure it's online.
-    Usage: >ping
     """
     await ctx.send("Pong!")
 
@@ -29,7 +28,6 @@ async def ping(ctx):
 async def set_(ctx, dark: int, light: int):
     """
     Sets the dark and light side points.
-    Usage: >set <dark points> <light points>
     """
     dark_light.set_dark_light(dark, light)
     await ctx.send(format_status(dark, light))
@@ -38,7 +36,6 @@ async def set_(ctx, dark: int, light: int):
 async def light(ctx):
     """
     Uses a light side point.
-    Usage: >light
     """
     dark, light = dark_light.get_dark_light()
     if light <= 0:
@@ -53,7 +50,6 @@ async def light(ctx):
 async def dark(ctx):
     """
     Uses a dark side point.
-    Usage: >dark
     """
     dark, light = dark_light.get_dark_light()
     if dark <= 0:
@@ -68,7 +64,6 @@ async def dark(ctx):
 async def effect(ctx):
     """
     Rolls on the random magical effect table.
-    Usage: >effect
     """
     rolls = parse_nlrme.get_rolls()
     roll = random.choice(rolls)
@@ -78,7 +73,6 @@ async def effect(ctx):
 async def crit(ctx, table: str):
     """
     Rolls on a critical hit table.
-    Usage: >crit <table prefix>
     """
     tables = parse_crits.get_tables()
     matches = [t for t in tables if t.lower().startswith(table.lower())]
@@ -95,7 +89,6 @@ async def crit(ctx, table: str):
 async def resetinit(ctx):
     """
     Resets the initiative tracker.
-    Usage: >resetinit
     """
     init.reset()
     await ctx.send("Initiative reset.")
@@ -104,7 +97,6 @@ async def resetinit(ctx):
 async def setinit(ctx, name: str, value: int):
     """
     Sets the initiative roll for a character.
-    Usage: >setinit <name> <value>
     """
     init.add(name, value)
     await ctx.send(init.get_formatted())
@@ -113,7 +105,6 @@ async def setinit(ctx, name: str, value: int):
 async def rollinit(ctx, name: str, bonus: int):
     """
     Rolls initiative for a character.
-    Usage: >rollinit <name> <bonus>
     """
     value = roll1.d(20) + bonus
     init.add(name, value)
@@ -123,13 +114,21 @@ async def rollinit(ctx, name: str, bonus: int):
 async def roll(ctx, *roll_split):
     """
     Rolls some dice.
-    Usage: >roll <roll>
 
     See https://www.critdice.com/roll-advanced-dice/ for syntax.
     """
     roll = " ".join(roll_split)
     result, explanation = rolldice.roll_dice(roll)
     await ctx.send(f"Result: {result}\nExplanation: {explanation}")
+
+
+async def on_command_error(ctx, error):
+    if ctx.command:
+        await ctx.send_help(ctx.command)
+    else:
+        await ctx.send(error)
+
+bot.on_command_error = on_command_error
 
 
 api_key = data.get()["api-key"]
