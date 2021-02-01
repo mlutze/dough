@@ -111,23 +111,30 @@ async def rollinit(ctx, name: str, bonus: int):
     await ctx.send(init.get_formatted())
 
 @bot.command()
-async def roll(ctx, *roll_split):
+async def roll(ctx, *roll_code):
     """
     Rolls some dice.
 
     See https://www.critdice.com/roll-advanced-dice/ for syntax.
     """
-    roll = " ".join(roll_split)
+    roll = " ".join(roll_code)
+    mention = ctx.author.mention
     result, explanation = rolldice.roll_dice(roll)
-    await ctx.send(f"Result: {result}\nExplanation: {explanation}")
+    await ctx.send(f"{mention}\nResult: {result}\nExplanation: {explanation}")
 
 
 async def on_command_error(ctx, error):
     print(error)
+    mention = ctx.author.mention
     if ctx.command:
-        await ctx.send_help(ctx.command)
+        usage = usage_string(ctx.command)
+        help = ctx.command.help
+        await ctx.send(f"{mention}\n{usage}\n\n{help}")
     else:
-        await ctx.send(error)
+        await ctx.send(f"{mention}\n{error}")
+
+def usage_string(command) -> str:
+    return f"usage: `>{command.name} {command.signature}`"
 
 bot.on_command_error = on_command_error
 
