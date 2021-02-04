@@ -12,7 +12,7 @@ def add(name: str, value: int):
 
 def get_formatted():
     init = data.get()[KEY]
-    header = "Initiative\n"
+    header = "*Initiative*\n"
     roll_list = [(init[name], name) for name in init]
     roll_list.sort(reverse=True)
     contents = "\n".join(f"{roll}: {name}" for roll, name in roll_list)
