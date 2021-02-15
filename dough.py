@@ -9,6 +9,7 @@ import init
 import parse_crits
 import parse_nlrme
 import random
+import quests
 import roll as roll1
 
 bot = commands.Bot(command_prefix='>')
@@ -121,6 +122,46 @@ async def roll(ctx, *roll_code):
     mention = ctx.author.mention
     result, explanation = rolldice.roll_dice(roll)
     await ctx.send(f"{mention}\nResult: {result}\nExplanation: {explanation}")
+
+@bot.command()
+async def add_quest(ctx, *quest):
+    """
+    Adds a quest to the quest list.
+    """
+    quests.add(" ".join(quest))
+    await ctx.send(quests.get_formatted())
+
+@bot.command()
+async def remove_quest(ctx, num: int):
+    """
+    Removes a quest from the quest list.
+    """
+    quests.remove(num)
+    await ctx.send(quests.get_formatted())
+
+@bot.command()
+async def check(ctx, num: int):
+    """
+    Checks off a quest from the quest list.
+    """
+    quests.check(num)
+    await ctx.send(quests.get_formatted())
+
+@bot.command()
+async def fail(ctx, num: int):
+    """
+    Marks a quest as failed.
+    """
+    quests.fail(num)
+    await ctx.send(quests.get_formatted())
+
+@bot.command()
+async def uncheck(ctx, num: int):
+    """
+    Resets a quest.
+    """
+    quests.uncheck(num)
+    await ctx.send(quests.get_formatted())
 
 
 async def on_command_error(ctx, error):
