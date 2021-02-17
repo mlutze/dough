@@ -13,7 +13,7 @@ class Data:
         self.lock = threading.Lock()
     
     def require_lock(self):
-        if not self.lock.locked:
+        if not self.lock.locked():
             raise UnsafeOperation
 
     def read(self):
