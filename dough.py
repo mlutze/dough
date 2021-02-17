@@ -124,7 +124,7 @@ async def roll(ctx, *roll_code):
     await ctx.send(f"{mention}\nResult: {result}\nExplanation: {explanation}")
 
 @bot.command()
-async def add_quest(ctx, *quest):
+async def addquest(ctx, *quest):
     """
     Adds a quest to the quest list.
     """
@@ -132,7 +132,7 @@ async def add_quest(ctx, *quest):
     await ctx.send(quests.get_formatted())
 
 @bot.command()
-async def remove_quest(ctx, num: int):
+async def removequest(ctx, num: int):
     """
     Removes a quest from the quest list.
     """
