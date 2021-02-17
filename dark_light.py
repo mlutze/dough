@@ -1,12 +1,14 @@
-import data
+from data import DATA
 
 KEY = "dark_light"
 
 def get_dark_light():
-    d = data.get()[KEY]
-    return d["dark"], d["light"]
+    with DATA.lock:
+        d = DATA.get()[KEY]
+        return d["dark"], d["light"]
 
 def set_dark_light(dark, light):
-    data.get()[KEY]["dark"] = dark
-    data.get()[KEY]["light"] = light
-    data.write()
+    with DATA.lock:
+        DATA.get()[KEY]["dark"] = dark
+        DATA.get()[KEY]["light"] = light
+        DATA.write()

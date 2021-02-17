@@ -1,29 +1,39 @@
 import json
 import threading
+from typing import Dict, Any
 
-LOCK = threading.Lock()
 DATA_FILE = "data.json"
-DATA = None
 
-def read():
-    global DATA
-    global DATA_FILE
-    try:
-        with LOCK:
-            with open(DATA_FILE) as data_file:
-                DATA = json.load(data_file)
-    except:
-        print(f"Failed to load {DATA_FILE}")
-        DATA = {}
+class UnsafeOperation(Exception):
+    pass
+class Data:
+    def __init__(self, data_file: str):
+        self.data_file: str = data_file
+        self.data: Dict[str, Any] = None
+        self.lock = threading.Lock()
+    
+    def require_lock(self):
+        if not self.lock.locked:
+            raise UnsafeOperation
 
-def write():
-    global DATA
-    global DATA_FILE
-    with LOCK:
-        with open(DATA_FILE, "w") as data_file:
-            json.dump(DATA, data_file)
+    def read(self):
+        self.require_lock()
+        try:
+            with open(self.data_file) as data_file:
+                self.data = json.load(data_file)
+        except:
+            print(f"Failed to load {self.data_file}")
+            self.data = {}
 
-def get():
-    if DATA is None:
-        read()
-    return DATA
+    def write(self):
+        self.require_lock()
+        with open(self.data_file, "w") as data_file:
+            json.dump(self.data, data_file)
+
+    def get(self):
+        self.require_lock()
+        if self.data is None:
+            self.read()
+        return self.data
+
+DATA = Data(DATA_FILE)

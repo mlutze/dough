@@ -4,7 +4,7 @@ from discord.ext import commands
 import rolldice
 
 import dark_light
-import data
+from data import DATA
 import init
 import parse_crits
 import parse_nlrme
@@ -179,6 +179,6 @@ def usage_string(command) -> str:
 
 bot.on_command_error = on_command_error
 
-
-api_key = data.get()["api-key"]
+with DATA.lock:
+    api_key = DATA.get()["api-key"]
 bot.run(api_key)

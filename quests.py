@@ -1,6 +1,6 @@
 from typing import List, Tuple
 
-import data
+from data import DATA
 
 KEY = "quests"
 UNCHECKED = 0
@@ -12,34 +12,40 @@ CHECKED_SYM = ":white_check_mark:"
 FAILED_SYM = ":x:"
 
 def get() -> List[Tuple[int, str]]:
-    return data.get()[KEY]
+    with DATA.lock:
+        return DATA.get()[KEY]
 
 def add(quest: str) -> None:
-    data.get()[KEY].append((UNCHECKED, quest))
-    data.write()
+    with DATA.lock:
+        DATA.get()[KEY].append((UNCHECKED, quest))
+        DATA.write()
 
 def remove(quest_num: int) -> None:
-    index = quest_num - 1
-    del data.get()[KEY][index]
-    data.write()
+    with DATA.lock:
+        index = quest_num - 1
+        del DATA.get()[KEY][index]
+        DATA.write()
 
 def check(quest_num: int) -> None:
-    index = quest_num - 1
-    _, quest = data.get()[KEY][index]
-    data.get()[KEY][index] = (CHECKED, quest)
-    data.write()
+    with DATA.lock:
+        index = quest_num - 1
+        _, quest = DATA.get()[KEY][index]
+        DATA.get()[KEY][index] = (CHECKED, quest)
+        DATA.write()
 
 def fail(quest_num: int) -> None:
-    index = quest_num - 1
-    _, quest = data.get()[KEY][index]
-    data.get()[KEY][index] = (FAILED, quest)
-    data.write()
+    with DATA.lock:
+        index = quest_num - 1
+        _, quest = DATA.get()[KEY][index]
+        DATA.get()[KEY][index] = (FAILED, quest)
+        DATA.write()
 
 def uncheck(quest_num: int) -> None:
-    index = quest_num - 1
-    _, quest = data.get()[KEY][index]
-    data.get()[KEY][index] = (UNCHECKED, quest)
-    data.write()
+    with DATA.lock:
+        index = quest_num - 1
+        _, quest = DATA.get()[KEY][index]
+        DATA.get()[KEY][index] = (UNCHECKED, quest)
+        DATA.write()
 
 def format_quest(num: int, quest: Tuple[int, str]) -> str:
     syms = {

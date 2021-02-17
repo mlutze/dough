@@ -1,17 +1,20 @@
-import data
+from data import DATA
 
 KEY = "init"
 
 def reset():
-    data.get()[KEY] = {}
-    data.write()
+    with DATA.lock:
+        DATA.get()[KEY] = {}
+        DATA.write()
 
 def add(name: str, value: int):
-    data.get()[KEY][name] = value
-    data.write()
+    with DATA.lock:
+        DATA.get()[KEY][name] = value
+        DATA.write()
 
 def get_formatted():
-    init = data.get()[KEY]
+    with DATA.lock:
+        init = DATA.get()[KEY]
     header = "**Initiative**\n"
     roll_list = [(init[name], name) for name in init]
     roll_list.sort(reverse=True)
