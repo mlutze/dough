@@ -111,7 +111,7 @@ async def rollinit(ctx, name: str, bonus: int):
     init.add(name, value)
     await ctx.send(init.get_formatted())
 
-@bot.command()
+@bot.command(aliases=["r"])
 async def roll(ctx, *roll_code):
     """
     Rolls some dice.
@@ -123,7 +123,7 @@ async def roll(ctx, *roll_code):
     result, explanation = rolldice.roll_dice(roll)
     await ctx.send(f"{mention}\nResult: {result}\nExplanation: {explanation}")
 
-@bot.command()
+@bot.command(aliases=["aq"])
 async def addquest(ctx, *quest):
     """
     Adds a quest to the quest list.
@@ -131,7 +131,7 @@ async def addquest(ctx, *quest):
     quests.add(" ".join(quest))
     await ctx.send(quests.get_formatted())
 
-@bot.command()
+@bot.command(aliases=["rq"])
 async def removequest(ctx, num: int):
     """
     Removes a quest from the quest list.
