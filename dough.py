@@ -10,7 +10,6 @@ import parse_crits
 import parse_nlrme
 import random
 import quests
-import roll as roll1
 
 bot = commands.Bot(command_prefix='>')
 commands
@@ -107,7 +106,7 @@ async def rollinit(ctx, name: str, bonus: int):
     """
     Rolls initiative for a character.
     """
-    value = roll1.d(20) + bonus
+    value, _ = rolldice.roll_dice("d20 + {bonus}")
     init.add(name, value)
     await ctx.send(init.get_formatted())
 
