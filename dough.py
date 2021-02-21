@@ -162,6 +162,13 @@ async def uncheck(ctx, num: int):
     quests.uncheck(num)
     await ctx.send(quests.get_formatted())
 
+@bot.command(name="quests")
+async def quests_(ctx):
+    """
+    Lists the quests.
+    """
+    await ctx.send(quests.get_formatted())
+
 
 async def on_command_error(ctx, error):
     print(error)
