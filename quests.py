@@ -1,3 +1,4 @@
+from more_itertools import chunked
 from typing import List, Tuple
 
 from data import DATA
@@ -56,8 +57,10 @@ def format_quest(num: int, quest: Tuple[int, str]) -> str:
     status, name = quest
     return f"{syms[status]} {num}. {name}"
 
-def get_formatted() -> str:
+def get_formatted() -> List[str]:
    d = get()
-   header = "**Quests**\n"
-   contents =  "\n".join(format_quest(i, quest) for i, quest in enumerate(d, 1))
-   return header + contents
+   header = "**Quests**"
+   groups = chunked((format_quest(i, quest) for i, quest in enumerate(d, 1)), 5)
+   contents =  ["\n".join(quests) for quests in groups]
+   print(contents)
+   return [header] + contents

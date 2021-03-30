@@ -128,7 +128,8 @@ async def addquest(ctx, *quest):
     Adds a quest to the quest list.
     """
     quests.add(" ".join(quest))
-    await ctx.send(quests.get_formatted())
+    for quest in quests.get_formatted():
+        await ctx.send(quest)
 
 @bot.command(aliases=["rq"])
 async def removequest(ctx, num: int):
@@ -136,7 +137,8 @@ async def removequest(ctx, num: int):
     Removes a quest from the quest list.
     """
     quests.remove(num)
-    await ctx.send(quests.get_formatted())
+    for quest in quests.get_formatted():
+        await ctx.send(quest)
 
 @bot.command()
 async def check(ctx, num: int):
@@ -144,7 +146,8 @@ async def check(ctx, num: int):
     Checks off a quest from the quest list.
     """
     quests.check(num)
-    await ctx.send(quests.get_formatted())
+    for quest in quests.get_formatted():
+        await ctx.send(quest)
 
 @bot.command()
 async def fail(ctx, num: int):
@@ -152,7 +155,8 @@ async def fail(ctx, num: int):
     Marks a quest as failed.
     """
     quests.fail(num)
-    await ctx.send(quests.get_formatted())
+    for quest in quests.get_formatted():
+        await ctx.send(quest)
 
 @bot.command()
 async def uncheck(ctx, num: int):
@@ -160,14 +164,16 @@ async def uncheck(ctx, num: int):
     Resets a quest.
     """
     quests.uncheck(num)
-    await ctx.send(quests.get_formatted())
+    for quest in quests.get_formatted():
+        await ctx.send(quest)
 
 @bot.command(name="quests")
 async def quests_(ctx):
     """
     Lists the quests.
     """
-    await ctx.send(quests.get_formatted())
+    for quest in quests.get_formatted():
+        await ctx.send(quest)
 
 
 async def on_command_error(ctx, error):
