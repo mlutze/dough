@@ -62,5 +62,4 @@ def get_formatted() -> List[str]:
    header = "**Quests**"
    groups = chunked((format_quest(i, quest) for i, quest in enumerate(d, 1)), 5)
    contents =  ["\n".join(quests) for quests in groups]
-   print(contents)
    return [header] + contents
