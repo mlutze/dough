@@ -175,6 +175,14 @@ async def quests_(ctx):
     for quest in quests.get_formatted():
         await ctx.send(quest)
 
+@bot.command()
+async def server(ctx):
+    """
+    Gives a link to the Foundry server.
+    """
+    with DATA.lock:
+        await ctx.send(DATA.get()["server"])
+
 
 async def on_command_error(ctx, error):
     print(error)
