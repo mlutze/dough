@@ -183,6 +183,15 @@ async def server(ctx):
     with DATA.lock:
         await ctx.send(DATA.get()["server"])
 
+@bot.command()
+async def setserver(ctx, addr):
+    """
+    Sets the link to the Foundry server.
+    """
+    with DATA.lock:
+        DATA.get()["server"] = addr
+        DATA.write()
+    await ctx.send(f"Set the server to `{addr}`.")
 
 async def on_command_error(ctx, error):
     print(error)
