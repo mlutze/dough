@@ -204,6 +204,13 @@ async def pull(ctx, lever):
         await ctx.send(message)
     except ValueError:
         await ctx.send("Invalid lever.")
+
+@bot.command()
+async def look(ctx):
+    """
+    Looks at the status of the museum display.
+    """
+    await ctx.send(levers.look())
     
 
 async def on_command_error(ctx, error):
