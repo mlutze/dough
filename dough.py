@@ -200,7 +200,7 @@ async def pull(ctx, lever):
     Pulls a lever in the museum.
     """
     try:
-        message = levers.pull(lever)
+        message = levers.pull(int(lever))
         await ctx.send(message)
     except ValueError:
         await ctx.send("Invalid lever.")
