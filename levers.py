@@ -10,6 +10,9 @@ NUM_GEARS = 6
 LEVERS = "levers"
 GEARS = "gears"
 
+GREEN = ":green_circle:"
+RED = ":red_circle:"
+
 
 def init() -> None:
     with DATA.lock:
@@ -40,39 +43,39 @@ def pull(lever: int) -> str:
 def get_message(gear: int, state: bool) -> str:
     if gear == 0:
         if state:
-            return "The **Trade District** emerges from the terrain."
+            return GREEN + " The **Trade District** emerges from the terrain."
         else:
-            return "The **Trade District** descends into the terrain."
+            return RED + " The **Trade District** descends into the terrain."
     elif gear == 1:
         if state:
-            return "**The Docks** emerge from the water and terrain."
+            return GREEN + " **The Docks** emerge from the water and terrain."
         else:
-            return "**The Docks** descend into the water and terrain."
+            return RED + " **The Docks** descend into the water and terrain."
     elif gear == 2:
         if state:
-            return "The **South Town** emerges from the terrain."
+            return GREEN + " The **South Town** emerges from the terrain."
         else:
-            return "The **South Town** descends into the terrain."
+            return RED + " The **South Town** descends into the terrain."
     elif gear == 3:
         if state:
-            return "The **Mead Park** emerges from the terrain."
+            return GREEN + " The **Mead Park** emerges from the terrain."
         else:
-            return "The **Mead Park** descends into the terrain."
+            return RED + " The **Mead Park** descends into the terrain."
     elif gear == 4:
         if state:
-            return "The **Farmland** emerges from the terrain."
+            return GREEN + " The **Farmland** emerges from the terrain."
         else:
-            return "The **Farmland** descends into the terrain."
+            return RED + " The **Farmland** descends into the terrain."
     elif gear == 5:
         if state:
-            return "The **Roads** emerge from the terrain."
+            return GREEN + " The **Roads** emerge from the terrain."
         else:
-            return "The **Roads** descend into the terrain."
+            return RED + " The **Roads** descend into the terrain."
     elif gear == 6:
         if state:
-            return "The **Fleet** emerges from the water."
+            return GREEN + " The **Fleet** emerges from the water."
         else:
-            return "The **Fleet** descends into the water."
+            return RED + " The **Fleet** descends into the water."
     else:
         raise Exception("bad lever")
 
