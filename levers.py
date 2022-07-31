@@ -4,8 +4,8 @@ from data import DATA
 import random
 import more_itertools
 
-NUM_LEVERS = 7
-NUM_GEARS = 7
+NUM_LEVERS = 6
+NUM_GEARS = 6
 
 LEVERS = "levers"
 GEARS = "gears"
