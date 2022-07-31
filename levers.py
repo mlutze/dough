@@ -31,7 +31,7 @@ def pull(lever: int) -> str:
         levers = DATA.get()[LEVERS]
         gears = DATA.get()[GEARS]
         levers = [set(lever) for lever in levers]
-        message = get_full_message(gears, levers[lever])
+        message = get_full_update_message(gears, levers[lever])
         gears = apply(gears, levers[lever])
         if all(gears):
             message += "\n**A window in the device opens, revealing a delicate gear set!**"
@@ -39,8 +39,15 @@ def pull(lever: int) -> str:
         DATA.write()
     return message
 
+def look() -> str:
+    with DATA.lock:
+        gears = DATA.get()[GEARS]
+        message = get_full_status_message(gears)
+        if all(gears):
+            message += "\n**A window in the device opens, revealing a delicate gear set!**"
+    return message
 
-def get_message(gear: int, state: bool) -> str:
+def get_update_message(gear: int, state: bool) -> str:
     if gear == 0:
         if state:
             return GREEN + " The **Trade District** emerges from the terrain."
@@ -80,10 +87,52 @@ def get_message(gear: int, state: bool) -> str:
         raise Exception("bad lever")
 
 
-def get_full_message(state: list[bool], lever: set[int]) -> str:
-    messages = [get_message(gear, not(state[gear])) for gear in range(NUM_GEARS) if gear in lever]
+def get_full_update_message(state: list[bool], lever: set[int]) -> str:
+    messages = [get_update_message(gear, not(state[gear])) for gear in range(NUM_GEARS) if gear in lever]
     return "\n".join(messages)
 
+def get_status_message(gear: int, state: bool) -> str:
+    if gear == 0:
+        if state:
+            return GREEN + " The **Trade District** is visible."
+        else:
+            return RED + " The **Trade District** is not visible."
+    elif gear == 1:
+        if state:
+            return GREEN + " **The Docks** are visible."
+        else:
+            return RED + " **The Docks** are not visible."
+    elif gear == 2:
+        if state:
+            return GREEN + " The **South Town** is visible."
+        else:
+            return RED + " The **South Town** is not visible."
+    elif gear == 3:
+        if state:
+            return GREEN + " The **Mead Park** is visible."
+        else:
+            return RED + " The **Mead Park** is not visible."
+    elif gear == 4:
+        if state:
+            return GREEN + " The **Farmland** is visible."
+        else:
+            return RED + " The **Farmland** is not visible."
+    elif gear == 5:
+        if state:
+            return GREEN + " The **Roads** are visible."
+        else:
+            return RED + " The **Roads** are not visible."
+    elif gear == 6:
+        if state:
+            return GREEN + " The **Fleet** is visible."
+        else:
+            return RED + " The **Fleet** is not visible."
+    else:
+        raise Exception("bad lever")
+
+def get_full_status_message(state: list[bool]) -> str:
+    messages = [get_status_message(gear, state[gear]) for gear in range(NUM_GEARS)]
+    return "\n".join(messages)
 
 def apply(state: list[bool], lever: set[int]) -> list[bool]:
     new_state = state.copy()
