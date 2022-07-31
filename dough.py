@@ -10,6 +10,7 @@ import parse_crits
 import parse_nlrme
 import random
 import quests
+import levers
 
 bot = commands.Bot(command_prefix='>')
 commands
@@ -192,6 +193,18 @@ async def setserver(ctx, addr):
         DATA.get()["server"] = addr
         DATA.write()
     await ctx.send(f"Set the server to `{addr}`.")
+
+@bot.command()
+async def pull(ctx, lever):
+    """
+    Pulls a lever in the museum.
+    """
+    try:
+        message = levers.pull(lever)
+        await ctx.send(message)
+    except ValueError:
+        await ctx.send("Invalid lever.")
+    
 
 async def on_command_error(ctx, error):
     print(error)

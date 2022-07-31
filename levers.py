@@ -1,10 +1,84 @@
 from __future__ import annotations
 from typing import Optional
+from data import DATA
 import random
 import more_itertools
 
 NUM_LEVERS = 7
 NUM_GEARS = 7
+
+LEVERS = "levers"
+GEARS = "gears"
+
+
+def init() -> None:
+    with DATA.lock:
+        levers = random_solvable_nontrivial_puzzle(NUM_GEARS, NUM_LEVERS)
+        levers = [list(lever) for lever in levers]
+        DATA.get()[LEVERS] = levers
+        DATA.get()[GEARS] = initial_state(NUM_GEARS)
+        DATA.write()
+
+def pull(lever: int) -> str:
+    if not (1 <= lever <= NUM_LEVERS):
+        return f"There is no lever {lever}."
+    with DATA.lock:
+        levers = DATA.get()[LEVERS]
+        gears = DATA.get()[GEARS]
+        levers = [set(lever) for lever in levers]
+        message = get_full_message(gears, levers[lever])
+        gears = apply(gears, levers[lever])
+        if all(gears):
+            message += "\n**A window in the device opens, revealing a delicate gear set!**"
+        DATA.get()[GEARS] = gears
+        DATA.write()
+    return message
+
+
+def get_message(gear: int, state: bool) -> str:
+    if gear == 0:
+        if state:
+            return "The **Trade District** emerges from the terrain."
+        else:
+            return "The **Trade District** descends into the terrain."
+    elif gear == 1:
+        if state:
+            return "**The Docks** emerge from the water and terrain."
+        else:
+            return "**The Docks** descend into the water and terrain."
+    elif gear == 2:
+        if state:
+            return "The **South Town** emerges from the terrain."
+        else:
+            return "The **South Town** descends into the terrain."
+    elif gear == 3:
+        if state:
+            return "The **Mead Park** emerges from the terrain."
+        else:
+            return "The **Mead Park** descends into the terrain."
+    elif gear == 4:
+        if state:
+            return "The **Farmland** emerges from the terrain."
+        else:
+            return "The **Farmland** descends into the terrain."
+    elif gear == 5:
+        if state:
+            return "The **Roads** emerge from the terrain."
+        else:
+            return "The **Roads** descend into the terrain."
+    elif gear == 6:
+        if state:
+            return "The **Fleet** emerges from the water."
+        else:
+            return "The **Fleet** descends into the water."
+    else:
+        raise Exception("bad lever")
+
+
+def get_full_message(state: list[bool], lever: set[int]) -> str:
+    messages = [get_message(gear, not(state[gear])) for gear in range(NUM_GEARS) if gear in lever]
+    return "\n".join(messages)
+
 
 def apply(state: list[bool], lever: set[int]) -> list[bool]:
     new_state = state.copy()
@@ -64,35 +138,3 @@ def random_solvable_nontrivial_puzzle(num_gears: int, num_levers: int) -> list[s
         puzzle = random_puzzle(num_gears, num_levers)
         if solvable(puzzle, num_gears) and not trivially_solvable(puzzle, num_gears):
             return puzzle
-
-# for gears in range(1, 11):
-#     for levers in range(1, 11):
-#         ok = 0
-#         triv = 0
-#         for _ in range(100):
-#             puzzle = random_puzzle(gears, levers)
-#             if (solvable(puzzle, gears)):
-#                 ok += 1
-#             if trivially_solvable(puzzle, gears):
-#                 triv += 1
-#         print(gears, levers, ok, triv)
-
-levers = random_solvable_nontrivial_puzzle(NUM_GEARS, NUM_LEVERS)
-state = [False for _ in range(NUM_GEARS)]
-
-while False in state:
-    # print(f"Solvable: {solvable(NUM_GEARS, levers)}")
-    print(state)
-    input_ = input("Pull a lever: ")
-    if input_ == "?":
-        print("Solution: ", solution(levers, NUM_GEARS))
-    else:
-        lever_num = int(input_)
-        if lever_num == 0:
-            levers = random_solvable_nontrivial_puzzle(NUM_GEARS, NUM_LEVERS)
-            state = [False for _ in range(NUM_GEARS)]
-        else:
-            lever = levers[lever_num - 1]
-            state = apply(state, lever)
-
-print("Success!")
