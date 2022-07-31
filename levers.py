@@ -22,6 +22,8 @@ def init() -> None:
 def pull(lever: int) -> str:
     if not (1 <= lever <= NUM_LEVERS):
         return f"There is no lever {lever}."
+    # change to 0-indexed
+    lever -= 1
     with DATA.lock:
         levers = DATA.get()[LEVERS]
         gears = DATA.get()[GEARS]
