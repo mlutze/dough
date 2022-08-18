@@ -14,6 +14,18 @@ GEARS = "gears"
 
 GREEN = ":green_circle:"
 RED = ":red_circle:"
+NUMS = [
+    ":one:",
+    ":two:"
+    ":three:",
+    ":four:",
+    ":five:",
+    ":six:",
+    ":seven:",
+    ":eight:",
+    ":nine:",
+    ":keycap_ten:",
+]
 
 
 def reset(num_levers: int, num_gears: int) -> str:
@@ -52,7 +64,7 @@ def look() -> str:
     with DATA.lock:
         gears = DATA.get()[GEARS]
         num_levers = len(DATA.get()[LEVERS])
-        message = f"There are {num_levers} levers.\n"
+        message = f"{NUMS[num_levers]} There are {num_levers} levers.\n"
         message += get_full_status_message(gears)
         if all(gears):
             message += "\n**A window in the device opens, revealing a delicate gear set!**"
