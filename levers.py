@@ -38,7 +38,7 @@ def pull(lever: int) -> str:
         gears = DATA.get()[GEARS]
         levers = [set(lever) for lever in levers]
         if not (0 <= lever < len(levers)):
-            return f"There is no lever {lever}."
+            return f"There is no lever {lever + 1}." # change to 1-indexed for message
 
         message = get_full_update_message(gears, levers[lever])
         gears = apply(gears, levers[lever])
