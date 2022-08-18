@@ -169,15 +169,11 @@ async def setserver(ctx, addr):
     await ctx.send(f"Set the server to `{addr}`.")
 
 @bot.command()
-async def pull(ctx, lever):
+async def pull(ctx, lever: int):
     """
     Pulls a lever in the museum.
     """
-    try:
-        message = levers.pull(int(lever))
-        await ctx.send(message)
-    except ValueError:
-        await ctx.send("Invalid lever.")
+    await ctx.send(levers.pull(lever))
 
 @bot.command()
 async def look(ctx):
@@ -187,7 +183,7 @@ async def look(ctx):
     await ctx.send(levers.look())
 
 @bot.command()
-async def reset(ctx, num_levers, num_objects):
+async def reset(ctx, num_levers: int, num_objects: int):
     """
     Creates a new lever puzzle with the given number of levers and objects.
     """
