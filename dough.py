@@ -5,7 +5,6 @@ import rolldice
 
 import dark_light
 from data import DATA
-import init
 import parse_crits
 import parse_nlrme
 import random
