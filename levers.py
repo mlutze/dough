@@ -64,7 +64,7 @@ def look() -> str:
     with DATA.lock:
         gears = DATA.get()[GEARS]
         num_levers = len(DATA.get()[LEVERS])
-        message = f"{NUMS[num_levers - 1]} There are {num_levers} levers.\n"
+        message = f"{NUMS[num_levers + 1]} There are {num_levers} levers.\n"
         message += get_full_status_message(gears)
         if all(gears):
             message += "\n**A window in the device opens, revealing a delicate gear set!**"
