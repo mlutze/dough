@@ -186,6 +186,13 @@ async def look(ctx):
     Looks at the status of the museum display.
     """
     await ctx.send(levers.look())
+
+@bot.command()
+async def reset(ctx, num_levers, num_objects):
+    """
+    Creates a new lever puzzle with the given number of levers and objects.
+    """
+    await ctx.send(levers.reset(num_levers, num_objects))
     
 
 async def on_command_error(ctx, error):

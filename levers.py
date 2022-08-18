@@ -4,8 +4,9 @@ from data import DATA
 import random
 import more_itertools
 
-NUM_LEVERS = 6
-NUM_GEARS = 6
+MIN_LEVERS = 2
+MIN_GEARS = 3
+MAX_GEARS = 7
 
 LEVERS = "levers"
 GEARS = "gears"
@@ -14,23 +15,30 @@ GREEN = ":green_circle:"
 RED = ":red_circle:"
 
 
-def init() -> None:
+def reset(num_levers: int, num_gears: int) -> str:
     with DATA.lock:
-        levers = random_solvable_nontrivial_puzzle(NUM_GEARS, NUM_LEVERS)
+        if not (num_levers >= MIN_LEVERS):
+            return f"Minimum of {MIN_LEVERS} levers."
+        if not (MIN_GEARS <= num_gears <= MAX_GEARS):
+            return f"Minimum of {MIN_GEARS} objects. Maximum of {MAX_GEARS} objects."
+        levers = random_solvable_nontrivial_puzzle(num_levers, num_gears)
         levers = [list(lever) for lever in levers]
         DATA.get()[LEVERS] = levers
-        DATA.get()[GEARS] = initial_state(NUM_GEARS)
+        DATA.get()[GEARS] = initial_state(num_gears)
         DATA.write()
+        return "Puzzle reset."
 
 def pull(lever: int) -> str:
-    if not (1 <= lever <= NUM_LEVERS):
-        return f"There is no lever {lever}."
     # change to 0-indexed
     lever -= 1
+
     with DATA.lock:
         levers = DATA.get()[LEVERS]
         gears = DATA.get()[GEARS]
         levers = [set(lever) for lever in levers]
+        if not (0 <= lever < len(levers)):
+            return f"There is no lever {lever}."
+
         message = get_full_update_message(gears, levers[lever])
         gears = apply(gears, levers[lever])
         if all(gears):
@@ -88,7 +96,7 @@ def get_update_message(gear: int, state: bool) -> str:
 
 
 def get_full_update_message(state: list[bool], lever: set[int]) -> str:
-    messages = [get_update_message(gear, not(state[gear])) for gear in range(NUM_GEARS) if gear in lever]
+    messages = [get_update_message(gear, not(state[gear])) for gear in range(len(state)) if gear in lever]
     return "\n".join(messages)
 
 def get_status_message(gear: int, state: bool) -> str:
@@ -131,7 +139,7 @@ def get_status_message(gear: int, state: bool) -> str:
         raise Exception("bad lever")
 
 def get_full_status_message(state: list[bool]) -> str:
-    messages = [get_status_message(gear, state[gear]) for gear in range(NUM_GEARS)]
+    messages = [get_status_message(gear, state[gear]) for gear in range(len(state))]
     return "\n".join(messages)
 
 def apply(state: list[bool], lever: set[int]) -> list[bool]:
