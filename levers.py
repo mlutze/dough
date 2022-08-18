@@ -51,7 +51,9 @@ def pull(lever: int) -> str:
 def look() -> str:
     with DATA.lock:
         gears = DATA.get()[GEARS]
-        message = get_full_status_message(gears)
+        num_levers = len(DATA.get[LEVERS])
+        message = f"There are {num_levers} levers.\n"
+        message += get_full_status_message(gears)
         if all(gears):
             message += "\n**A window in the device opens, revealing a delicate gear set!**"
     return message
