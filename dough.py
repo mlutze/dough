@@ -86,31 +86,6 @@ async def crit(ctx, table: str):
         await ctx.send(matches[0])
         await ctx.send(roll)
 
-@bot.command()
-async def resetinit(ctx):
-    """
-    Resets the initiative tracker.
-    """
-    init.reset()
-    await ctx.send("Initiative reset.")
-
-@bot.command()
-async def setinit(ctx, name: str, value: int):
-    """
-    Sets the initiative roll for a character.
-    """
-    init.add(name, value)
-    await ctx.send(init.get_formatted())
-
-@bot.command()
-async def rollinit(ctx, name: str, bonus: int):
-    """
-    Rolls initiative for a character.
-    """
-    value, _ = rolldice.roll_dice("d20 + {bonus}")
-    init.add(name, value)
-    await ctx.send(init.get_formatted())
-
 @bot.command(aliases=["r"])
 async def roll(ctx, *roll_code):
     """
