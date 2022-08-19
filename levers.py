@@ -7,7 +7,7 @@ import more_itertools
 MIN_LEVERS = 3
 MIN_GEARS = 3
 MAX_GEARS = 7
-MAX_GEARS = 10
+MAX_LEVERS = 10
 
 LEVERS = "levers"
 GEARS = "gears"
@@ -31,14 +31,14 @@ NUMS = [
 
 def reset(num_levers: int, num_gears: int) -> str:
     with DATA.lock:
-        if not (num_levers >= MIN_LEVERS):
+        if not (MIN_LEVERS <= num_levers <= MAX_LEVERS):
             return f"Minimum of {MIN_LEVERS} levers."
         if not (MIN_GEARS <= num_gears <= MAX_GEARS):
             return f"Minimum of {MIN_GEARS} objects. Maximum of {MAX_GEARS} objects."
-        levers = random_solvable_nontrivial_puzzle(num_gears, num_levers)
+        levers = random_solvable_nontrivial_puzzle(num_gears=num_gears, num_levers=num_levers)
         levers = [list(lever) for lever in levers]
         DATA.get()[LEVERS] = levers
-        DATA.get()[GEARS] = initial_state(num_gears)
+        DATA.get()[GEARS] = initial_state(num_gears=num_gears)
         DATA.write()
         return "Puzzle reset."
 
