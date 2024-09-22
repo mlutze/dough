@@ -1,3 +1,5 @@
+import datetime
+
 import discord
 from discord.ext import commands
 
@@ -10,6 +12,7 @@ import parse_nlrme
 import random
 import quests
 import levers
+import keywords
 
 bot = commands.Bot(command_prefix='>')
 commands
@@ -188,6 +191,36 @@ async def reset(ctx, num_levers: int, num_objects: int):
     Creates a new lever puzzle with the given number of levers and objects.
     """
     await ctx.send(levers.reset(num_levers, num_objects))
+
+@bot.command(name="keywords")
+async def keywords_(ctx, number: int, since_days: int):
+    """
+    Gets the keywords used in the server chats for the given time period.
+    """
+    today = datetime.datetime.today()
+    delta = datetime.timedelta(days = since_days)
+    target = today - delta
+
+    await ctx.send(f"Collecting {number} keywords from the past {since_days} days...")
+
+    channels = ctx.guild.channels
+    # filter down to text channels
+    text_channels = [c for c in channels if isinstance(c, discord.TextChannel)]
+
+    messages = []   
+    async with ctx.typing():
+        for channel in text_channels:
+            async for message in channel.history(limit = None, after = target):
+                if not message.author.bot:
+                    # filter bot commands
+                    content = message.clean_content
+                    if not content.startswith(">") and not content.startswith("!"):
+                        messages.append(content)
+        
+        text = "\n".join(messages)
+        words = keywords.get_keywords(text, number)
+        response = "||`" + ", ".join(words) + "`||"
+    await ctx.send(response)
     
 
 async def on_command_error(ctx, error):
