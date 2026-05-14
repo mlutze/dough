@@ -6,7 +6,7 @@ SMACKS_GIVEN = "SMACKS_GIVEN"
 SMACKS_RECEIVED = "SMACKS_RECEIVED"
 
 
-def smack(source: discord.User, target: discord.User):
+def try_smack(source: discord.User, target: discord.User):
     with DATA.lock:
         initialize_smacks(source)
         initialize_smacks(target) 
