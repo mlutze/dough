@@ -16,7 +16,9 @@ def try_smack(source: discord.User, target: discord.User):
         else:
             DATA.get()[SMACKS_GIVEN][str(source.id)] += 1
             DATA.get()[SMACKS_RECEIVED][str(target.id)] += 1
-            return  True
+            DATA.get()[LAST_SMACKS][str(source.id)] = time.time()
+            DATA.write()
+            return True
 
 
 # returns true if the given epoch time is within 24 hours of now

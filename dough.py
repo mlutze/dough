@@ -235,7 +235,7 @@ async def smack_(ctx, target: discord.User):
 @bot.command()
 async def smacks(ctx, target: discord.User):
     (given, received) = smack.get_smacks(target)
-    mention = ctx.author.mention
+    mention = target.mention
     await ctx.send(f"{mention} has given {given} smacks and received {received} smacks.")
 
 async def on_command_error(ctx, error):
