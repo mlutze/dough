@@ -13,6 +13,7 @@ import random
 import quests
 import levers
 import keywords
+import smack
 
 bot = commands.Bot(command_prefix='>')
 commands
@@ -221,7 +222,21 @@ async def keywords_(ctx, number: int, since_days: int):
         words = keywords.get_keywords(text, number)
         response = "||`" + ", ".join(words) + "`||"
     await ctx.send(response)
-    
+
+@bot.command(name="smack")
+async def smack_(ctx, target: discord.User):
+    user_mention = ctx.author.mention
+    target_mention = target.mention
+    if smack.try_smack(ctx.author, target):
+        await ctx.send(f"{user_mention} has smacked {target_mention}")
+    else:
+        await ctx.send(f"{user_mention}, you have already smacked someone today.")
+
+@bot.command()
+async def smacks(ctx, target: discord.User):
+    (given, received) = smack.get_smacks(target)
+    mention = ctx.author.mention
+    await ctx.send(f"{mention} has given {given} smacks and received {received} smacks.")
 
 async def on_command_error(ctx, error):
     print(error)
