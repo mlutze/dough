@@ -39,6 +39,6 @@ def initialize_smacks(user: discord.User):
 def get_smacks(user: discord.User):
     with DATA.lock:
         initialize_smacks(user)
-        given = DATA.get()[SMACKS_GIVEN][user.id]
-        received = DATA.get()[SMACKS_RECEIVED][user.id]
+        given = DATA.get()[SMACKS_GIVEN][str(user.id)]
+        received = DATA.get()[SMACKS_RECEIVED][str(user.id)]
         return (given, received)
