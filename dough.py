@@ -159,17 +159,17 @@ async def server(ctx):
     """
     Gives a link to the Foundry server.
     """
-    with DATA.lock:
-        await ctx.send(DATA.get()["server"])
+    with DATA as data:
+        server = data["server"]
+    await ctx.send(server)
 
 @bot.command()
 async def setserver(ctx, addr):
     """
     Sets the link to the Foundry server.
     """
-    with DATA.lock:
-        DATA.get()["server"] = addr
-        DATA.write()
+    with DATA as data:
+        data["server"] = addr
     await ctx.send(f"Set the server to `{addr}`.")
 
 @bot.command()
@@ -253,6 +253,6 @@ def usage_string(command) -> str:
 
 bot.on_command_error = on_command_error
 
-with DATA.lock:
-    api_key = DATA.get()["api-key"]
+with DATA as data:
+    api_key = data["api-key"]
 bot.run(api_key)

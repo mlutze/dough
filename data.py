@@ -1,39 +1,29 @@
 import json
 import threading
+from types import TracebackType
 from typing import Dict, Any
 
 DATA_FILE = "data.json"
 
-class UnsafeOperation(Exception):
-    pass
-class Data:
+class DataManager:
     def __init__(self, data_file: str):
-        self.data_file: str = data_file
-        self.data: Dict[str, Any] = None
+        self._data_file: str = data_file
         self.lock = threading.Lock()
+        self._data: Dict[str, Any] = {}
     
-    def require_lock(self):
-        if not self.lock.locked():
-            raise UnsafeOperation
-
-    def read(self):
-        self.require_lock()
+    def __enter__(self) -> Dict[str, Any]:
+        self.lock.__enter__()
         try:
-            with open(self.data_file) as data_file:
-                self.data = json.load(data_file)
+            with open(self._data_file) as data_file:
+                self._data = json.load(data_file)
         except:
-            print(f"Failed to load {self.data_file}")
-            self.data = {}
+            print(f"Failed to load {self._data_file}")
+            self._data = {}
+        return self._data
 
-    def write(self):
-        self.require_lock()
-        with open(self.data_file, "w") as data_file:
-            json.dump(self.data, data_file)
+    def __exit__(self, type: type[BaseException] | None, value: BaseException | None, trace: TracebackType) -> None:
+        with open(self._data_file, "w") as data_file:
+            json.dump(self._data, data_file)
+        self.lock.__exit__(type, value, trace)
 
-    def get(self):
-        self.require_lock()
-        if self.data is None:
-            self.read()
-        return self.data
-
-DATA = Data(DATA_FILE)
+DATA = DataManager(DATA_FILE)

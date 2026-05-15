@@ -30,25 +30,24 @@ NUMS = [
 
 
 def reset(num_levers: int, num_gears: int) -> str:
-    with DATA.lock:
+    with DATA as data:
         if not (MIN_LEVERS <= num_levers <= MAX_LEVERS):
             return f"Minimum of {MIN_LEVERS} levers."
         if not (MIN_GEARS <= num_gears <= MAX_GEARS):
             return f"Minimum of {MIN_GEARS} objects. Maximum of {MAX_GEARS} objects."
         levers = random_solvable_nontrivial_puzzle(num_gears=num_gears, num_levers=num_levers)
         levers = [list(lever) for lever in levers]
-        DATA.get()[LEVERS] = levers
-        DATA.get()[GEARS] = initial_state(num_gears=num_gears)
-        DATA.write()
+        data[LEVERS] = levers
+        data[GEARS] = initial_state(num_gears=num_gears)
         return "Puzzle reset."
 
 def pull(lever: int) -> str:
     # change to 0-indexed
     lever -= 1
 
-    with DATA.lock:
-        levers = DATA.get()[LEVERS]
-        gears = DATA.get()[GEARS]
+    with DATA as data:
+        levers = data[LEVERS]
+        gears = data[GEARS]
         levers = [set(lever) for lever in levers]
         if not (0 <= lever < len(levers)):
             return f"There is no lever {lever + 1}." # change to 1-indexed for message
@@ -57,14 +56,13 @@ def pull(lever: int) -> str:
         gears = apply(gears, levers[lever])
         if all(gears):
             message += "\n**A window in the device opens, revealing a delicate gear set!**"
-        DATA.get()[GEARS] = gears
-        DATA.write()
+        data[GEARS] = gears
     return message
 
 def look() -> str:
-    with DATA.lock:
-        gears = DATA.get()[GEARS]
-        num_levers = len(DATA.get()[LEVERS])
+    with DATA as data:
+        gears = data[GEARS]
+        num_levers = len(data[LEVERS])
         message = f"{NUMS[num_levers]} There are {num_levers} levers.\n"
         message += get_full_status_message(gears)
         if all(gears):

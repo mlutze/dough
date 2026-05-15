@@ -7,17 +7,16 @@ SMACKS_RECEIVED = "SMACKS_RECEIVED"
 
 
 def try_smack(source: discord.User, target: discord.User):
-    with DATA.lock:
-        initialize_smacks(source)
-        initialize_smacks(target) 
-        last_smack = DATA.get()[LAST_SMACKS][str(source.id)]
+    with DATA as data:
+        initialize_smacks(source, data)
+        initialize_smacks(target, data) 
+        last_smack = data[LAST_SMACKS][str(source.id)]
         if within_day(last_smack):
             return False
         else:
-            DATA.get()[SMACKS_GIVEN][str(source.id)] += 1
-            DATA.get()[SMACKS_RECEIVED][str(target.id)] += 1
-            DATA.get()[LAST_SMACKS][str(source.id)] = time.time()
-            DATA.write()
+            data[SMACKS_GIVEN][str(source.id)] += 1
+            data[SMACKS_RECEIVED][str(target.id)] += 1
+            data[LAST_SMACKS][str(source.id)] = time.time()
             return True
 
 
@@ -27,8 +26,7 @@ def within_day(instant: int) -> bool:
     now = time.time()
     return now - instant < day_seconds
 
-def initialize_smacks(user: discord.User):
-    data = DATA.get()
+def initialize_smacks(user: discord.User, data):
     for key in [LAST_SMACKS, SMACKS_GIVEN, SMACKS_RECEIVED]:
         if key not in data:
             data[key] = {}
@@ -36,11 +34,10 @@ def initialize_smacks(user: discord.User):
         id = str(user.id)
         if id not in obj:
             obj[id] = 0
-    DATA.write()
 
 def get_smacks(user: discord.User):
-    with DATA.lock:
+    with DATA as data:
         initialize_smacks(user)
-        given = DATA.get()[SMACKS_GIVEN][str(user.id)]
-        received = DATA.get()[SMACKS_RECEIVED][str(user.id)]
+        given = data[SMACKS_GIVEN][str(user.id)]
+        received = data[SMACKS_RECEIVED][str(user.id)]
         return (given, received)
