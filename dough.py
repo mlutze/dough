@@ -225,6 +225,9 @@ async def keywords_(ctx, number: int, since_days: int):
 
 @bot.command(name="smack")
 async def smack_(ctx, target: discord.User):
+    """
+    Registers that you have smacked the target user.
+    """
     user_mention = ctx.author.mention
     target_mention = target.mention
     if smack.try_smack(ctx.author, target):
@@ -234,6 +237,9 @@ async def smack_(ctx, target: discord.User):
 
 @bot.command()
 async def smacks(ctx, target: discord.User):
+    """
+    Reports the number of smacks given and received by the target user.
+    """
     (given, received) = smack.get_smacks(target)
     mention = target.mention
     await ctx.send(f"{mention} has given {given} smacks and received {received} smacks.")

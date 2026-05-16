@@ -1,7 +1,7 @@
 import json
 import threading
 from types import TracebackType
-from typing import Dict, Any
+from typing import Dict, Any, Optional
 
 DATA_FILE = "data.json"
 
@@ -21,7 +21,7 @@ class DataManager:
             self._data = {}
         return self._data
 
-    def __exit__(self, type: type[BaseException] | None, value: BaseException | None, trace: TracebackType) -> None:
+    def __exit__(self, type: Optional[type[BaseException]], value: Optional[BaseException], trace: TracebackType) -> None:
         with open(self._data_file, "w") as data_file:
             json.dump(self._data, data_file)
         self.lock.__exit__(type, value, trace)
