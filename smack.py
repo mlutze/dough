@@ -37,7 +37,7 @@ def initialize_smacks(user: discord.User, data):
 
 def get_smacks(user: discord.User):
     with DATA as data:
-        initialize_smacks(user)
+        initialize_smacks(user, data)
         given = data[SMACKS_GIVEN][str(user.id)]
         received = data[SMACKS_RECEIVED][str(user.id)]
         return (given, received)
