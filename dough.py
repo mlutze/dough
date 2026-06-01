@@ -14,6 +14,7 @@ import quests
 import levers
 import keywords
 import smack
+import genesys
 
 bot = commands.Bot(command_prefix='>')
 commands
@@ -243,6 +244,21 @@ async def smacks(ctx, target: discord.User):
     (given, received) = smack.get_smacks(target)
     mention = target.mention
     await ctx.send(f"{mention} has given {given} smacks and received {received} smacks.")
+
+@bot.command()
+async def gen(ctx, *roll_code: str):
+    """
+    Rolls Genesys-style dice.
+
+    Use b, k, g, y, r, p to indicate the dice. (k for Black)
+    Use numbers or repetition to indicate multiple dice.
+
+    Examples: bbbry, 3r2prggg
+    """
+    roll = "".join(roll_code)
+    mention = ctx.author.mention
+    result, explanation = genesys.handle(roll)
+    await ctx.send(f"{mention}\nResult: {result}\nExplanation: {explanation}")
 
 async def on_command_error(ctx, error):
     print(error)
