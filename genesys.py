@@ -97,7 +97,7 @@ def get_dice(chars):
     dice = []
     for char in chars:
         if char not in DICE:
-            return None
+            raise ValueError(f"Invalid die: {char}")
         dice.append(DICE[char])
     return dice
     
@@ -137,6 +137,8 @@ def get_report(summary):
 
     if despairs > 0:
         report += f", {despairs} despair(s)"
+    
+    return report
 
 def handle(code: str):
     chars = unfold(code)
