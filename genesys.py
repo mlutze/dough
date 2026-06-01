@@ -109,12 +109,13 @@ def roll(dice):
     return results
 
 def reduce(results):
-    successes = results.count(SUCCESS)
-    advantages = results.count(ADVANTAGE)
-    triumphs = results.count(TRIUMPH)
-    failures = results.count(FAILURE)
-    threats = results.count(THREAT)
-    despairs = results.count(DESPAIR)
+    sides = [side for result in results for side in result]
+    successes = sides.count(SUCCESS)
+    advantages = sides.count(ADVANTAGE)
+    triumphs = sides.count(TRIUMPH)
+    failures = sides.count(FAILURE)
+    threats = sides.count(THREAT)
+    despairs = sides.count(DESPAIR)
     net_success = successes + triumphs - failures - despairs
     net_advantage = advantages - threats
     return (net_success, net_advantage, triumphs, despairs)
